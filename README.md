@@ -1,1 +1,3 @@
-# component-2
+# component
+
+Shared components used in web applications.
