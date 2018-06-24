@@ -1,0 +1,36 @@
+<div id=toolbar__ID class="navbar navbar-default" style='margin-bottom:0px;'>
+    <div class="navbar-form navbar-left">
+        <button id=save2__ID type=button class='btn btn-secondary' >Submit</button>
+        <button id=delete__ID type=button class='btn btn-secondary' >Delete</button>
+        <button id=copy__ID type=button class='btn btn-secondary' >Copy</button>
+        <button id=paste__ID type=button class='btn btn-secondary' >Paste</button>
+    </div>
+</div>
+<script>
+    (function() {
+        //---------------------------------------------
+        $('#copy__ID').on('click',function(){
+            if($vm.copy_paste==undefined) $vm.copy_paste={}
+            $vm.copy_paste['__ID']=$vm.serialize('#F__ID');
+        })
+        //---------------------------------------------
+        $('#paste__ID').on('click',function(){
+            if($vm.copy_paste!=undefined && $vm.copy_paste['__ID']!=null){
+                $vm.deserialize($vm.copy_paste['__ID'],'#F__ID');
+            }
+        })
+        //---------------------------------------------
+        $('#save2__ID').on('click',function(){
+            $('#F__ID').find(':submit').click();
+        })
+        //---------------------------------------------
+    })();
+</script>
+<style>
+    #toolbar__ID{
+        background-color:#ccc;
+        padding-left:5px;
+        margin-bottom:0px;
+        overflow:hidden'
+    }
+</style>

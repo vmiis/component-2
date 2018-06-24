@@ -1,0 +1,195 @@
+<section>
+    <div id=toolbar__ID class="navbar navbar-default" style='margin-bottom:0px;'>
+        <div class="navbar-form navbar-left">
+            <button id=save__ID type=button class='btn btn-secondary' >Save</button>
+            <button id=delete__ID type=button class='btn btn-secondary' >Delete</button>
+            <button id=copy__ID type=button class='btn btn-secondary' >Copy</button>
+            <button id=paste__ID type=button class='btn btn-secondary' >Paste</button>
+        </div>
+    </div>
+    <form id=F__ID>
+		<div id=table__ID>
+	        <table id=tb__ID>
+	            <thead style='background-color: #eee;'>
+	            </thead>
+	            <tbody>
+	            </tbody>
+	        </table>
+		</div>
+    </form>
+</section>
+<script>
+function F__ID(){
+	//---------------------------------------------
+    var m;
+	//---------------------------------------------
+	$('#D__ID').on('load',function(){
+        var input=$vm.vm['__ID'].input;
+        m=input.m;
+        build_form();
+            /*
+		$('#save__ID').show(); $('#delete__ID').show();
+		if(_save_style=='none'){ $('#save__ID').hide(); $('#delete__ID').hide(); }
+		if(_records[I].ID==undefined) $('#delete__ID').hide();
+        */
+	});
+	//---------------------------------------------
+    $('#save__ID').on('click', function(){
+        m.save();
+        window.history.go(-1);
+    })
+    //-------------------------------------
+	$('#copy__ID').on('click',function(){
+		if($vm.copy_paste==undefined) $vm.copy_paste={}
+		$vm.copy_paste['__ID']=jQuery.extend(true, {}, m.records[m.form_I]);
+	})
+	//---------------------------------------------
+	$('#paste__ID').on('click',function(){
+		if($vm.copy_paste!=undefined && $vm.copy_paste['__ID']!=null){
+			var ID=m.records[m.form_I].ID;
+			m.records[m.form_I]=jQuery.extend(true, {}, $vm.copy_paste['__ID']);
+			m.records[m.form_I].ID=ID;
+            m.form_render();
+            m.form_cell_process();
+		}
+	})
+	//---------------------------------------------
+    $('#delete__ID').on('click', function(){
+        var rid=m.records[m.form_I].ID;
+        if(rid==undefined){
+            return;
+        }
+        if(confirm("Are you sure to delete?\n")){
+            m.record_delete(rid);
+            window.history.go(-1);
+        }
+    })
+    //-------------------------------------
+    var build_form=function(){
+        m.form_render=function(){
+            m.form_create_header();
+            $('#tb__ID thead').html("<tr><td>Name</td><td>Value</td></tr>");
+            var txt="";
+            var record=m.records[m.form_I];
+            for(var i=0;i<m.form_field_header.length;i++){
+                var label=m.form_field_header[i];
+                var id=m.form_field_id[i];
+                var value="";
+                if(record[id]!==undefined) value=record[id];
+                value=$('<div/>').text(value).html();
+                value=value.replace(/\n/g,'<br>');
+                if($vm.edge==0) txt+="<tr><td style='background-color:#F8F8F8;'>"+label.replace(/_/g,' ').replace(/<br>/g,' ')+"</td><td data-id="+id+" contenteditable>"+value+"</td></tr>";
+                else if($vm.edge==1) txt+="<tr><td style='background-color:#F8F8F8;'>"+label.replace(/_/g,' ').replace(/<br>/g,' ')+"</td><td data-id="+id+"><div contenteditable>"+value+"</div></td></tr>";
+            }
+            $('#tb__ID tbody').html(txt);
+            //--------------------------------------------
+        }
+        //---------------------------------------------
+        m.form_cell_process=function(){
+            var record=m.records[m.form_I];
+            //cell render
+            $('#tb__ID tbody td').each(function(){
+                var data_id=$(this).attr('data-id');
+                if(data_id!==undefined){
+                    if(m.cell_render!==undefined){ m.cell_render(m.records,m.form_I,data_id,$(this),m.form_set_value,'form'); }
+                }
+            })
+            //--------------------------------------------
+            if($vm.edge==0) $('#tb__ID tbody td').blur(function(){
+                var data_id=$(this).attr('data-id');
+                if(data_id!==undefined){
+                    var value=$(this).html().replace(/<div>/g,'').replace(/<\/div>/g,'\n').replace(/<br>/g,'\n');
+                    var value=$('<div/>').html(value).text();
+                    if(m.before_change!==undefined) m.before_change(m.records,m.form_I,data_id,$(this),m.form_set_value,'form');
+                    if(m.cell_value_process!==undefined) value=m.cell_value_process(value,data_id);
+                    m.form_set_value(value,m.records,m.form_I,data_id);
+                }
+                if(m.after_change_form!==undefined) m.after_change_form(m.records,I,data_id,$(this),m.form_set_value,'form');
+                if(m.after_change!==undefined) m.after_change(m.recored,m.form_I,data_id,$(this),m.form_set_value,'form');
+            })
+            if($vm.edge==1) $('#tb__ID tbody td').find('div:first').blur(function(){
+                var data_id=$(this).parent().attr('data-id'); //edge
+                if(data_id!==undefined){
+                    var value=$(this).html().replace(/<div>/g,'').replace(/<\/div>/g,'\n').replace(/<br>/g,'\n');
+                    value=$('<div/>').text(value).html();
+                    if(m.before_change!==undefined) m.before_change(m.recored,m.form_I,data_id,$(this),m.form_set_value,'form');
+                    if(m.cell_value_process!==undefined) value=m.cell_value_process(value,data_id);
+                    m.form_set_value(value,m.recored,m.form_I,data_id);
+                }
+                if(m.after_change_form!==undefined) m.after_change_form(m.recored,m.form_I,data_id,$(this),m.form_set_value,'form');
+                if(m.after_change!==undefined) m.after_change(m.recored,m.form_I,data_id,$(this),m.form_set_value,'form');
+            })
+            if(m.custom_field_process!==undefined) m.custom_field_process();
+        }
+        //---------------------------------------------
+        m.form_set_value=function(value,records,I,column_name){
+            if(value==="" && records[I][column_name]===undefined) return;
+            if(value!==records[I][column_name]){
+                records[I].vm_dirty=1;
+                records[I][column_name]=value;
+                //$('#save__ID').css('background','#E00');
+            }
+        }
+        //---------------------------------------------
+        m.form_render();
+        m.form_cell_process();
+        //---------------------------------------------
+    }
+    //---------------------------------------------
+}
+</script>
+<style>
+    #toolbar__ID{
+		background-color:#ccc;
+		padding-left:2px;
+		margin-bottom:0px;
+		overflow:hidden'
+    }
+    #D__ID{
+        background-color:#fff;
+		height:100%;
+		overflow: auto;
+        padding-bottom:260px;
+    }
+    #tb__ID{
+        /*min-width:100px;*/
+        border-collapse: collapse;
+        font-size: 13px;
+        font-family: Helvetica, Arial, sans-serif;
+    }
+    #tb__ID td{
+        border:1px solid #bbb;
+        padding:6px;
+        white-space: pre;
+    }
+    #title__ID{
+        font-weight:700;
+    }
+    @media print {
+        #content_container_0{
+            position:absolute;
+            overflow:visible;
+        }
+        html,body{
+            width:100%;
+            height:100%;
+            overflow:visible;
+        }
+        #D__ID{
+            width:100%;
+            height:100px;
+            overflow:visible;
+        }
+        body * {
+            visibility: hidden;
+        }
+        #tb__ID, #tb__ID * {
+            visibility: visible;
+        }
+        #tb__ID {
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+    }
+</style>
