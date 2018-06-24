@@ -3,10 +3,13 @@ if($vm.module==undefined) $vm.module={};
 $vm.module["__ID"]={};
 var m=$vm.module["__ID"];
 m.name=$vm.vm['__ID'].name;
-m.prefix=$vm.module_list[m.name].prefix;
-m.db_pid="";
-if($vm.module_list[m.name]['table_id']!=undefined) m.db_pid=$vm.module_list[m.name]['table_id'];
-m.qid=$vm.module_list[m.name]['qid'];
+m.input=$vm.vm['__ID'].input;
+m.module=$vm.module_list[m.name];
+m.preload=m.module.preload;
+m.prefix=m.module.prefx; if(m.prefix==undefined) m.prefix="";
+m.form_module=m.prefix+m.module.form_module;
+m.db_pid=m.module.table_id;
+m.qid=m.module.qid; if(m.qid==undefined) m.qid=$vm.qid;
 //-------------------------------------
 m.set_req=function(){
     var sql="with tb as (select Information,ID,UID,PUID,DateTime,Modified=Convert(varchar,Modified,127),Author,RowNum=row_number() over (order by ID DESC) from [TABLE-"+m.db_pid+"-@S1] )";
@@ -110,8 +113,8 @@ m.cell_process=function(){
             $(this).html("<u style='cursor:pointer'><i class='fa fa-pencil-square-o'></i></u>");
             $(this).find('u').on('click',function(){
                 m.form_I=row;
-                var this_module_name=$vm.vm['__ID'].name;
-                var form_module_name=$vm.module_list[this_module_name].form_module;
+                //var m.name=$vm.vm['__ID'].name;
+                var form_module_name=m.module.form_module;
                 if(form_module_name===undefined){
                     var name='grid_form__ID';
 					if($vm.module_list[name]==undefined){
@@ -120,12 +123,12 @@ m.cell_process=function(){
                     $vm.load_module_v2(name,$vm.root_layout_content_slot,{m:m});
                 }
                 else{
-					var prefix="";	if($vm.module_list[this_module_name].prefix!=undefined) prefix=$vm.module_list[this_module_name].prefix
-                    if($vm.module_list[prefix+form_module_name]===undefined){
-                        alert('Can not find "'+form_module_name+'" in the module list');
+					var prefix="";	if($vm.module_list[m.name].prefix!=undefined) prefix=$vm.module_list[m.name].prefix
+                    if($vm.module_list[m.form_module]===undefined){
+                        alert('Can not find "'+m.form_module+'" in the module list');
                         return;
                     }
-                    $vm.load_module_v2(prefix+form_module_name,$vm.root_layout_content_slot,{record:m.records[I]});
+                    $vm.load_module_v2(m.form_module,$vm.root_layout_content_slot,{record:m.records[I]});
                 }
             })
         }

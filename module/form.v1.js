@@ -1,17 +1,21 @@
-//---------------------------------------------
+//-------------------------------------
 if($vm.module==undefined) $vm.module={};
 $vm.module["__ID"]={};
 var m=$vm.module["__ID"];
 m.name=$vm.vm['__ID'].name;
-m.prefix=$vm.module_list[m.name].prefix;
-m.db_pid="";
-if($vm.module_list[m.name]['table_id']!=undefined) m.db_pid=$vm.module_list[m.name]['table_id'];
-m.qid=$vm.module_list[m.name]['qid'];
-//---------------------------------------------
+m.input=$vm.vm['__ID'].input; if(m.input==undefined) m.input={};
+m.module=$vm.module_list[m.name];
+m.preload=m.module.preload;
+m.prefix=m.module.prefx; if(m.prefix==undefined) m.prefix="";
+m.form_module=m.prefix+m.module.form_module;
+m.db_pid=m.module.table_id;
+m.qid=m.module.qid; if(m.qid==undefined) m.qid=$vm.qid;
+//-------------------------------------
 m.load=function(){
+    m.input=$vm.vm['__ID'].input; if(m.input==undefined) m.input={};
     $('#F__ID')[0].reset();
     $('#submit__ID').show();
-    var grid_record=$vm.vm['__ID'].input.record;
+    var grid_record=m.input.record;
     $('#delete__ID').hide(); if(grid_record!=undefined && grid_record.ID!==undefined) $('#delete__ID').show();
     $vm.deserialize(grid_record,'#F__ID');
 }
@@ -27,20 +31,21 @@ m.submit=function(event){
     if(m.before_submit!=undefined) r=m.before_submit(data,dbv);
     if(r==false) return;
     //--------------------------------------------------------
-    var rid=undefined; if($vm.vm['__ID'].input.record!=undefined) rid=$vm.vm['__ID'].input.record.ID;
-    var req={cmd:"add",db_pid:m.db_pid,data:data,dbv:dbv};
-    if(rid!=undefined) req={cmd:"modify",rid:rid,db_pid:m.db_pid,data:data,dbv:dbv};
+    var rid=undefined; if(m.input.record!=undefined) rid=m.input.record.ID;
+    var req={cmd:"add",qid:m.qid,db_pid:m.db_pid,data:data,dbv:dbv};
+    if(rid!=undefined) req={cmd:"modify",rid:rid,qid:m.qid,db_pid:m.db_pid,data:data,dbv:dbv};
+    if($vm.online_questionnaire==1) req={cmd:"add_s2",qid:m.qid,db_pid:form_tid,data:data,dbv:dbv};
     $VmAPI.request({data:req,callback:function(res){
         $vm.refresh=1;
-        if(rid!=undefined) window.history.go(-1);
-        else if($vm.vm['__ID'].input!=undefined && $vm.vm['__ID'].input.goback!=undefined) window.history.go(-1);
-        else $vm.alert('Your data has been successfully submitted');
+        if(rid!=undefined) window.history.go(-1);                       //modify
+        else if(m.input.goback!=undefined) window.history.go(-1);       //from grid
+        else $vm.alert('Your data has been successfully submitted');    //standalone
     }});
     //--------------------------------------------------------
 }
 //--------------------------------------------------------
 $('#delete__ID').on('click', function(){
-    var record=$vm.vm['__ID'].input.record;
+    var record=m.input.record;
     if(record==undefined) return;
     var rid=record.ID;
     if(rid==undefined){
