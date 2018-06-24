@@ -44,6 +44,9 @@ m.submit=function(event){
     //--------------------------------------------------------
 }
 //--------------------------------------------------------
+$('#D__ID').on('load',function(){ m.load();})
+$('#F__ID').submit(function(event){m.submit(event);})
+//--------------------------------------------------------
 $('#delete__ID').on('click', function(){
     var record=m.input.record;
     if(record==undefined) return;
