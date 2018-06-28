@@ -725,9 +725,8 @@ var _show_photo=function(rid,filename,modified) {
 }
 //-------------------------------------
 //Import
-if($vm.module_list['import_dialog_module']===undefined) $vm.module_list['import_dialog_module']=['--------','__COMPONENT__/dialog/import_dialog_module.html','2']
-$vm.load_module_by_name('import_dialog_module','',{})
-function import_handleFileSelect(evt) {
+var import_handleFileSelect=function(evt) {
+    var Dialog_module_id=$vm.get_module_id({name:'_system_import_dialog_module'})
     var files = evt.target.files;
     if(files.length>0){
         var reader = new FileReader();
@@ -741,9 +740,9 @@ function import_handleFileSelect(evt) {
                 if(n2>n1) tab=',';
                 var header=lines[0].replace(/ /g,'_').splitCSV(tab);
                 var flds=_fields.split(',');
-                var fn=$('#import_f__ID').val().substring($('#import_f__ID').val().lastIndexOf('\\')+1);
+                var fn=$('#import_file__ID').val().substring($('#import_file__ID').val().lastIndexOf('\\')+1);
                 if(confirm("Are you sure to import "+fn+"?\n")){
-                    $vm.open_dialog({name:'import_dialog_module'});
+                    $vm.open_dialog({name:'_system_import_dialog_module'});
                     var I=0;
                     var i=1;
                     jQuery.ajaxSetup({async:false});
@@ -764,27 +763,17 @@ function import_handleFileSelect(evt) {
                                         _before_submit(rd,_dbv);
                                     }
                                     I++;
-                                    var req={cmd:"add_record",db_pid:_db_pid.toString(),data:rd,dbv:_dbv};
+                                    //var req={cmd:"add_record",db_pid:_db_pid.toString(),data:rd,dbv:_dbv};
+                                    var req={cmd:"add_json_record",db_pid:_db_pid.toString(),data:rd,dbv:_dbv};
                                     $VmAPI.request({data:req,callback:function(res){}})
                                 }
-                                var mid;//=$vm.module_list['import_dialog_module'][0];
-                            	var url;//=$vm.module_list['import_dialog_module'][1];
-                                if(Array.isArray($vm.module_list['import_dialog_module'])===true){
-                                    mid=$vm.module_list['import_dialog_module'][0];
-                                	url=$vm.module_list['import_dialog_module'][1];
-            					}
-            					else{
-                                    mid=$vm.module_list['import_dialog_module']['table_id'];
-                                	url=$vm.module_list['import_dialog_module']['url'];
-            					}
-                            	var pid=$vm.id(url+mid);
-                                $('#import_num'+pid).text(I.toString());
+                                $('#import_num'+Dialog_module_id).text(I.toString());
                             }
                             i++;
                             setTimeout( looper, 100);
                         }
                         else{
-                            $vm.close_dialog({name:'import_dialog_module'});
+                            $vm.close_dialog({name:'_system_import_dialog_module'});
                             alert(I.toString()+" records have been imported.");
                             _request_data();
                         }
@@ -797,14 +786,14 @@ function import_handleFileSelect(evt) {
         reader.readAsText(files[0]);
     }
 }
-if(document.getElementById('import_f__ID')!==null) document.getElementById('import_f__ID').addEventListener('change', import_handleFileSelect,false);
+if(document.getElementById('import_file__ID')!==null) document.getElementById('import_file__ID').addEventListener('change', import_handleFileSelect,false);
 //-------------------------------------
 $('#search__ID').on('click',function(){   _set_req(); _request_data(); })
 $('#query__ID').on('click',function(){    _set_req(); _request_data(); })
 $('#export__ID').on('click',function(){   _export_records(); })
 $('#import__ID').on('click',function(){
-    $('#import_f__ID').val('');
-    $('#import_f__ID').trigger('click');
+    $('#import_file__ID').val('');
+    $('#import_file__ID').trigger('click');
 });
 //-----------------------------------------------
 //---------------------------------------------
