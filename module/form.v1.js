@@ -36,6 +36,12 @@ m.submit=function(event){
     if(rid!=undefined) req={cmd:"modify",rid:rid,qid:m.qid,db_pid:m.db_pid,data:data,dbv:dbv};
     if($vm.online_questionnaire==1) req={cmd:"add-s2",qid:m.qid,db_pid:m.db_pid,data:data,dbv:dbv};
     $VmAPI.request({data:req,callback:function(res){
+        if(rid==undefined && m.after_add!=undefined){
+            m.after_add(data,dbv,res); return;
+        }
+        if(rid!=undefined && m.after_modify!=undefined){
+            m.after_modify(data,dbv,res); return;
+        }
         $vm.refresh=1;
         if(rid!=undefined) window.history.go(-1);                       //modify
         else if(m.input.goback!=undefined) window.history.go(-1);       //from grid
@@ -73,3 +79,16 @@ $('#delete__ID').on('click', function(){
     }
 })
 //-------------------------------------
+$('#header__ID').on('click', function(event){
+    if(event.ctrlKey){
+        var x=document.getElementById("F__ID");
+        var txt="";var nm0="";
+        for (var i=0; i < x.length; i++) {
+            var nm=x.elements[i].getAttribute("name");
+            if(nm!=null && nm!=nm0){ if(txt!="") txt+=", "; txt+=nm; nm0=nm;}
+        }
+        //$vm.alert(txt);
+        console.log(txt);
+    }
+});
+//--------------------------------------------------------

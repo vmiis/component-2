@@ -6,7 +6,7 @@ m.name=$vm.vm['__ID'].name;
 m.input=$vm.vm['__ID'].input;
 m.module=$vm.module_list[m.name];
 m.preload=m.module.preload;
-m.prefix=m.module.prefx; if(m.prefix==undefined) m.prefix="";
+m.prefix=m.module.prefix; if(m.prefix==undefined) m.prefix="";
 m.form_module=m.prefix+m.module.form_module;
 m.db_pid=m.module.table_id;
 m.qid=m.module.qid; if(m.qid==undefined) m.qid=$vm.qid;
@@ -373,7 +373,20 @@ m.export_records=function(){
     start_export();
 }
 //---------------------------------------------
+$('#search__ID').on('click',function(){   m.set_req(); m.request_data(); })
+$('#query__ID').on('click',function(){    m.set_req(); m.request_data(); })
+$('#save__ID').on('click', function(){
+    m.save();
+})
+$('#export__ID').on('click',function(){   m.export_records(); })
+$("#p__ID").on('click',function(){  var I=$("#I__ID").text();I--;$("#I__ID").text(I); m.set_req(); m.request_data();})
+$("#n__ID").on('click',function(){  var I=$("#I__ID").text();I++;$("#I__ID").text(I); m.set_req(); m.request_data();})
+//-------------------------------------
 $('#new__ID').on('click', function(){
+    if(m.module.form_module!=undefined){
+        $vm.load_module_v2(m.form_module,'',{goback:1});
+        return;
+    }
     if(m.new_process!=undefined){
         if(m.new_process()==false) return;
     }
@@ -391,18 +404,6 @@ $('#new__ID').on('click', function(){
     }
     m.render(0);
 });
-$('#search__ID').on('click',function(){   m.set_req(); m.request_data(); })
-$('#query__ID').on('click',function(){    m.set_req(); m.request_data(); })
-$('#save__ID').on('click', function(){
-    m.save();
-})
-$('#export__ID').on('click',function(){   m.export_records(); })
-$("#p__ID").on('click',function(){  var I=$("#I__ID").text();I--;$("#I__ID").text(I); m.set_req(); m.request_data();})
-$("#n__ID").on('click',function(){  var I=$("#I__ID").text();I++;$("#I__ID").text(I); m.set_req(); m.request_data();})
-$('#D__ID').on('show',function(){
-    if($vm.refresh==1){
-        $vm.refresh=0;
-        m.set_req(); m.request_data();
-    }
-})
+$('#D__ID').on('load',function(){  if(m.preload==true) return; m.set_req(); m.request_data(); })
+$('#D__ID').on('show',function(){  if($vm.refresh==1){$vm.refresh=0; m.set_req(); m.request_data();} })
 //-----------------------------------------------
