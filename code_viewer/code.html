@@ -11,7 +11,7 @@
         VmInclude:__COMPONENT__/style/ease-in-out.js
         //--------------------------------------------------------
         $('#D__ID').on('load',function(){
-            $('#name__ID').text($vm.vm['__ID'].input.msg.replace(/_/,' '));
+            $('#name__ID').text($vm.vm['__ID'].input.name.replace(/_/,' '));
             $('#url__ID').text($vm.vm['__ID'].input.url);
             var top1=$('#code__ID').offset().top;
             $('#code__ID').css("height",$(window).height()-top1-$('#'+$vm.root_layout_footer).outerHeight()-8);
