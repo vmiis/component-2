@@ -34,7 +34,7 @@ m.submit=function(event){
     var rid=undefined; if(m.input.record!=undefined) rid=m.input.record.ID;
     var req={cmd:"add",qid:m.qid,db_pid:m.db_pid,data:data,dbv:dbv};
     if(rid!=undefined) req={cmd:"modify",rid:rid,qid:m.qid,db_pid:m.db_pid,data:data,dbv:dbv};
-    if($vm.online_questionnaire==1 || m.add_s2==1) req={cmd:"add-s2",qid:m.qid,db_pid:m.db_pid,data:data,dbv:dbv};
+    else if($vm.online_questionnaire==1 || m.add_s2==1) req={cmd:"add-s2",qid:m.qid,db_pid:m.db_pid,data:data,dbv:dbv};
     else if(m.add_anonymous==1) req={cmd:"add-anonymous",qid:m.qid,db_pid:m.db_pid,data:data,dbv:dbv};
     $VmAPI.request({data:req,callback:function(res){
         if(rid==undefined && m.after_add!=undefined){
