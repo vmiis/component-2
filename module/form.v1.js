@@ -26,27 +26,37 @@ m.submit=function(event){
     $('#submit__ID').hide();
     //--------------------------------------------------------
     var data=$vm.serialize('#F__ID');
+    var file=$vm.serialize_file('#F__ID');
     var dbv={}
     var r=true;
     if(m.before_submit!=undefined) r=m.before_submit(data,dbv);
     if(r==false) return;
     //--------------------------------------------------------
     var rid=undefined; if(m.input.record!=undefined) rid=m.input.record.ID;
-    var req={cmd:"add",qid:m.qid,db_pid:m.db_pid,data:data,dbv:dbv};
-    if(rid!=undefined) req={cmd:"modify",rid:rid,qid:m.qid,db_pid:m.db_pid,data:data,dbv:dbv};
-    else if($vm.online_questionnaire==1 || m.add_s2==1) req={cmd:"add-s2",qid:m.qid,db_pid:m.db_pid,data:data,dbv:dbv};
-    else if(m.add_anonymous==1) req={cmd:"add-anonymous",qid:m.qid,db_pid:m.db_pid,data:data,dbv:dbv};
+    var req={cmd:"add",qid:m.qid,db_pid:m.db_pid,data:data,dbv:dbv,file:file};
+    if(rid!=undefined) req={cmd:"modify",rid:rid,qid:m.qid,db_pid:m.db_pid,data:data,dbv:dbv,file:file};
+    else if($vm.online_questionnaire==1 || m.add_s2==1) req={cmd:"add-s2",qid:m.qid,db_pid:m.db_pid,data:data,dbv:dbv,file:file};
+    else if(m.add_anonymous==1) req={cmd:"add-anonymous",qid:m.qid,db_pid:m.db_pid,data:data,dbv:dbv,file:file};
+    var FN=0; $('#F__ID').find('input[type=file]').each(function(evt){ if(this.files.length==1) FN++; });
     $VmAPI.request({data:req,callback:function(res){
-        if(rid==undefined && m.after_add!=undefined){
-            m.after_add(data,dbv,res); return;
+        var after_submit=function(){
+            if(rid==undefined && m.after_add!=undefined){
+                m.after_add(data,dbv,res); return;
+            }
+            if(rid!=undefined && m.after_modify!=undefined){
+                m.after_modify(data,dbv,res); return;
+            }
+            $vm.refresh=1;
+            if(rid!=undefined) window.history.go(-1);                       //modify
+            else if(m.input.goback!=undefined) window.history.go(-1);       //from grid
+            else $vm.alert('Your data has been successfully submitted');    //standalone
         }
-        if(rid!=undefined && m.after_modify!=undefined){
-            m.after_modify(data,dbv,res); return;
+        if(FN==0) after_submit();
+        else{
+            $vm.upload_form_files_v2(res,$('#F__ID'),function(){
+                after_submit();
+            })
         }
-        $vm.refresh=1;
-        if(rid!=undefined) window.history.go(-1);                       //modify
-        else if(m.input.goback!=undefined) window.history.go(-1);       //from grid
-        else $vm.alert('Your data has been successfully submitted');    //standalone
     }});
     //--------------------------------------------------------
 }
