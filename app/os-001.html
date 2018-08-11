@@ -224,15 +224,15 @@
             $vm._boot();
         }
         //------------------------------------------
-        var url="https://api.vmiis.com/distribution/vmapi.min.js";
-        url=$vm.url(url);
-        var ver=localStorage.getItem(url+"_ver");
-        var txt=localStorage.getItem(url+"_txt");
+        var urlB="https://api.vmiis.com/distribution/vmapi.min.js";
+        urlB=$vm.url(urlB);
+        var ver=localStorage.getItem(urlB+"_ver");
+        var txt=localStorage.getItem(urlB+"_txt");
         //------------------------------------------
         if(ver!=$vm.ver[1] || txt===null || $vm.localhost==true){
             $.get(url+'?_='+$vm.ver[1],function(new_txt){
-                localStorage.setItem(url+"_txt",new_txt);
-                localStorage.setItem(url+"_ver",$vm.ver[1]);
+                localStorage.setItem(urlB+"_txt",new_txt);
+                localStorage.setItem(urlB+"_ver",$vm.ver[1]);
                 $('head').append('<scr'+'ipt>'+new_txt+'</scr'+'ipt>');
                 $vm._boot();
             },'text');
