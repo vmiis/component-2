@@ -30,7 +30,7 @@ m.submit=function(event){
     var dbv={}
     var r=true;
     if(m.before_submit!=undefined) r=m.before_submit(data,dbv);
-    if(r==false) return;
+    if(r==false){$('#submit__ID').show(); return;}
     //--------------------------------------------------------
     var rid=undefined; if(m.input.record!=undefined) rid=m.input.record.ID;
     var req={cmd:"add",qid:m.qid,db_pid:m.db_pid,data:data,dbv:dbv,file:file};

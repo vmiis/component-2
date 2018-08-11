@@ -1,0 +1,100 @@
+<div id=D_0>
+    <div system-html>
+        <div style='position:fixed;right:20px;bottom:0'>
+            <span id=vm_system_info style='color:#555';></span>
+        </div>
+        <div alert class="modal fade" id="vm_alert_information" tabindex="-1" role="dialog" aria-labelledby="vm_dialog" aria-hidden="true" data-backdrop="static">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="ModalLabel">Information</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        //------------------------------------
+        $vm._I=0; $vm._boot=function(){
+            $vm._I++;
+            if($vm._I==2){
+                $vm._id=0; $vm._start(); $vm.start();
+            }
+        }
+        //------------------------------------------
+        $vm._start=function(){
+            //------------------------------------------
+            var data=''; for(var key in window.localStorage){ if(window.localStorage.hasOwnProperty(key)){ data+=window.localStorage[key]; }}
+            if(data.length>3000000) localStorage.clear();
+            //------------------------------------------
+            $vm.vm={}; $vm.version=$vm.ver[0]; $vm.reload='';
+            $vm.hosting_path=window.location.href.substring(0, window.location.href.lastIndexOf('/')).split('\/?')[0];
+            $vm.debug_message=true; //show debug message in console
+            $vm.server='development';
+            $VmAPI.api_base="https://cbs.wappsystem.com/dev/";
+            //------------------------------------------
+            $vm.alert=function(msg){
+              $('#vm_alert_information div.modal-body').html( $('<div/>').html(msg).text() );
+              $("#vm_alert_information").modal();
+            }
+            $vm.close_alert=function(){
+              $('#vm_alert_information').modal('hide');
+            }
+            //------------------------------------
+        }
+        //------------------------------------
+        $VmAPI={};$vm.edge=0;
+        var url="https://framework.vmiis.com/distribution/vmframework.min.js";
+        var ver=localStorage.getItem(url+"_ver");
+        var txt=localStorage.getItem(url+"_txt");
+        if(ver!=$vm.ver[1] || txt===null || $vm.localhost==true){
+            $.get(url+'?_='+$vm.ver[1],function(new_txt){
+                localStorage.setItem(url+"_txt",new_txt);
+                localStorage.setItem(url+"_ver",$vm.ver[1]);
+                $('head').append('<scr'+'ipt>'+new_txt+'</scr'+'ipt>');
+                $vm._boot();
+            },'text');
+        }
+        else{
+            $('head').append('<scr'+'ipt>'+txt+'</scr'+'ipt>');
+            $vm._boot();
+        }
+        //------------------------------------------
+        var urlB="https://api.vmiis.com/distribution/vmapi.min.js";
+        var ver=localStorage.getItem(urlB+"_ver");
+        var txt=localStorage.getItem(urlB+"_txt");
+        //------------------------------------------
+        if(ver!=$vm.ver[1] || txt===null || $vm.localhost==true){
+            $.get(urlB+'?_='+$vm.ver[1],function(new_txt){
+                localStorage.setItem(urlB+"_txt",new_txt);
+                localStorage.setItem(urlB+"_ver",$vm.ver[1]);
+                $('head').append('<scr'+'ipt>'+new_txt+'</scr'+'ipt>');
+                $vm._boot();
+            },'text');
+        }
+        else{
+            $('head').append('<scr'+'ipt>'+txt+'</scr'+'ipt>');
+            $vm._boot();
+        }
+        //------------------------------------------
+    </script>
+    <style>
+        /*----------------------*/
+    	@keyframes vm_module_fadein {
+    		from { opacity:0; }
+    		to {opacity:1;}
+    	}
+        #content{
+            height:100%;
+        }
+    </style>
+</div>
