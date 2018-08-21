@@ -264,7 +264,7 @@ var _render=function(I){
                 if(form_module_name===undefined){
                     var name='grid_form__ID';
 					if($vm.module_list[name]==undefined){
-                    	$vm.module_list[name]={table_id:_db_pid.toString(),url:'__PARTS__/grid/form.v3.html'};
+                    	$vm.module_list[name]={table_id:_db_pid.toString(),url:'__COMPONENT__/grid/form.v3.html'};
 					}
 					if($vm.module_list[this_module_name].prefix!=undefined) prefix=$vm.module_list[this_module_name].prefix;
                     var content_container=$vm.root_layout_content_slot;
