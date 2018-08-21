@@ -171,7 +171,7 @@ $('#toolbar__ID').on('dblclick',function(event){
 		txt1=$('<div/>').html(txt1).text();
 		var txt2=JSON.stringify(local_module_list,null,4);
 		txt2=$('<div/>').html(txt2).text();
-		var url='__PARTS__/code_viewer/code.html'
+		var url='__COMPONENT__/code_viewer/code.html'
 		var param={
 			name:"code_viewer",
 			pid:$vm.id(url+"--------"),
