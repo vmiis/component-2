@@ -3,7 +3,7 @@ if($vm.module==undefined) $vm.module={};
 $vm.module["__ID"]={};
 var m=$vm.module["__ID"];
 m.name=$vm.vm['__ID'].name;
-m.input=$vm.vm['__ID'].input;
+m.input=$vm.vm['__ID'].input; //?
 m.module=$vm.module_list[m.name];
 m.preload=m.module.preload;
 m.prefix=m.module.prefix; if(m.prefix==undefined) m.prefix="";
@@ -21,7 +21,7 @@ m.set_req=function(){
 m.set_req_export=function(i1,i2){
     var sql="with tb as (select Information,DateTime,Author,RowNum=row_number() over (order by ID DESC) from [TABLE-"+m.db_pid+"-@S1] )";
     sql+="select Information,DateTime,Author from tb where RowNum between @I1 and @I2";
-	_req={cmd:'query_records',sql:sql,i1:i1,i2:i2};
+	m.req={cmd:'read',qid:m.qid,sql:sql,i1:i1,i2:i2};
 }
 //-----------------------------------------------
 m.request_data=function(){
@@ -404,6 +404,6 @@ $('#new__ID').on('click', function(){
     }
     m.render(0);
 });
-$('#D__ID').on('load',function(){  if(m.preload==true) return; m.set_req(); m.request_data(); })
+$('#D__ID').on('load',function(){  if(m.preload==true) return; if(m.load!=undefined) m.load(); m.set_req(); m.request_data(); })
 $('#D__ID').on('show',function(){  if($vm.refresh==1){$vm.refresh=0; m.set_req(); m.request_data();} })
 //-----------------------------------------------
