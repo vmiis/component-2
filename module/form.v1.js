@@ -6,7 +6,7 @@ m.name=$vm.vm['__ID'].name;
 m.input=$vm.vm['__ID'].input; if(m.input==undefined) m.input={};
 m.module=$vm.module_list[m.name];
 m.preload=m.module.preload;
-m.prefix=m.module.prefx; if(m.prefix==undefined) m.prefix="";
+m.prefix=m.module.prefix; if(m.prefix==undefined) m.prefix="";
 m.form_module=m.prefix+m.module.form_module;
 m.db_pid=m.module.table_id;
 m.qid=m.module.qid; if(m.qid==undefined) m.qid=$vm.qid;
