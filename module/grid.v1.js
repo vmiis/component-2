@@ -330,7 +330,7 @@ m.export_records=function(){
 
         var i1=1+(start-1+g_I)*page_size,i2=i1+page_size-1;
         m.set_req_export(i1.toString(),i2.toString());
-        $VmAPI.request({data:_req,callback:function(res){
+        $VmAPI.request({data:m.req,callback:function(res){
             busy=0;
             $('#export_num'+gDialog_module_id).text("Page "+(g_I+1).toString());
             if(res.records.length!=0){
@@ -383,6 +383,10 @@ $("#p__ID").on('click',function(){  var I=$("#I__ID").text();I--;$("#I__ID").tex
 $("#n__ID").on('click',function(){  var I=$("#I__ID").text();I++;$("#I__ID").text(I); m.set_req(); m.request_data();})
 //-------------------------------------
 $('#new__ID').on('click', function(){
+    if(m.new!=undefined){
+        m.new();
+        return;
+    }
     if(m.module.form_module!=undefined){
         $vm.load_module_v2(m.form_module,'',{goback:1});
         return;
