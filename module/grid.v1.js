@@ -3,7 +3,7 @@ if($vm.module==undefined) $vm.module={};
 $vm.module["__ID"]={};
 var m=$vm.module["__ID"];
 m.name=$vm.vm['__ID'].name;
-m.input=$vm.vm['__ID'].input; //?
+//m.input=$vm.vm['__ID'].input; //?
 m.module=$vm.module_list[m.name];
 m.preload=m.module.preload;
 m.prefix=m.module.prefix; if(m.prefix==undefined) m.prefix="";
@@ -408,6 +408,6 @@ $('#new__ID').on('click', function(){
     }
     m.render(0);
 });
-$('#D__ID').on('load',function(){  if(m.preload==true) return; if(m.load!=undefined) m.load(); m.set_req(); m.request_data(); })
+$('#D__ID').on('load',function(){  m.input=$vm.vm['__ID'].input; if(m.preload==true) return; if(m.load!=undefined) m.load(); m.set_req(); m.request_data(); })
 $('#D__ID').on('show',function(){  if($vm.refresh==1){$vm.refresh=0; m.set_req(); m.request_data();} })
 //-----------------------------------------------

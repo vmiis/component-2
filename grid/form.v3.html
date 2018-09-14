@@ -71,25 +71,29 @@ function F__ID(){
     #tb__ID td{
         border:1px solid #bbb;
         padding:6px;
-        white-space: pre;
+        /*white-space: pre;*/
     }
     #title__ID{
         font-weight:700;
     }
     @media print {
         #content_container_0{
+            height:100%!Important;
             position:absolute;
             overflow:visible;
         }
         html,body{
+            margin: 0;
+            padding: 0;
             width:100%;
             height:100%;
             overflow:visible;
         }
         #D__ID{
             width:100%;
-            height:100px;
             overflow:visible;
+            margin: 0;
+            padding: 0;
         }
         body * {
             visibility: hidden;
