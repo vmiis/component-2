@@ -95,7 +95,6 @@ m.render=function(){
         txt+"</tr>";
     }
     $('#grid__ID').html(txt);
-    //$('#refresh__ID').on('click', function(){ m.set_req(); m.request_data();})
     //------------------------------------
     m.cell_process();
 }
