@@ -83,7 +83,7 @@ m.render=function(){
         for(var j=0;j<m.field_header.length;j++){
             var b=m.field_id[j];
             var value="";
-            if(m.records[i][b]!==undefined) value=m.records[i][b];
+            if(m.records[i][b]!==undefined && m.records[i][b]!==null) value=m.records[i][b];
             value=value.toString();
             value=$('<div/>').text(value).html();
             value=value.replace(/\n/g,'<br>');
