@@ -29,7 +29,7 @@
             console.log('re-loading from url. '+url)
             $.get(url+'?_='+new Date().getTime(),function(new_txt){
                 localStorage.setItem(s_url,new_txt);
-                alert("Reloaded, please refresh web browser.");
+                alert("Reloaded.");
             },'text');
         })
         //--------------------------------------------------------
