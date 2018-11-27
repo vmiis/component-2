@@ -245,6 +245,7 @@ m.row_data=function(record){
 //-----------------------------------------------
 m.add=function(record,dbv){
     var req={cmd:"add",qid:m.qid,db_pid:m.db_pid.toString(),data:m.row_data(record),dbv:dbv};
+    if(m.xml==1 || m.xml==true)  req={cmd:"add",qid:m.qid,db_pid:m.db_pid.toString(),data:m.row_data(record),dbv:dbv,xml:"1"};
     $VmAPI.request({data:req,callback:function(res){
         record.ID=res.ret;
         record.dirty="0";
@@ -260,6 +261,7 @@ m.add=function(record,dbv){
 //-----------------------------------------------
 m.modify=function(record,dbv){
     var req={cmd:"modify",qid:m.qid,rid:record.ID,db_pid:m.db_pid.toString(),data:m.row_data(record),dbv:dbv};
+    if(m.xml==1 || m.xml==true)  req={cmd:"modify",qid:m.qid,rid:record.ID,db_pid:m.db_pid.toString(),data:m.row_data(record),dbv:dbv,xml:"1"};
     $VmAPI.request({data:req,callback:function(res){
         record.dirty="0";
         if(m.after_modify!==undefined)  m.after_modify(res,record,dev);
