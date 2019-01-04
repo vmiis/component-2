@@ -79,31 +79,25 @@ var processing_file_start=function(contents){
 		for(var k=0;k<gHeader.length;k++){gHeader[k]=gHeader[k].trim().replace(/ /g,'_');}
 		gFields=m.form_fields.split(',');
 		gI=1; //not 0, start from second line, the first line is header
-		/*
+		
 		//check first record
 		var items=gLines[gI].splitCSV(gTab);
-		var sql="select top 1 ID from [TABLE-"+_db_pid+"] where DT1=@T1 and V1=@D1 and V2=@D2 and S1=@S1 and S2=@S2";
-		items[0]=$vm.date_to_string_dmy(new Date(items[0]));
-		if(items[2]=='') items[2]='0';
-		if(items[3]=='') items[3]='0';
-		var req={cmd:"query_records",sql:sql,t1:items[0],d1:items[2],d2:items[3],s1:items[4],s2:items[5]};
-		$VmAPI.request({data:req,callback:function(res){
-			if(res.records.length==1){
-				alert('The first record was found in the database. It is possible all other records have been imported.');
-				return;
-			}
-			else{
-				$vm.open_dialog({name:'_system_import_dialog_module'});
-				gOK=1;
-				//start importing...
-				gLoop=setInterval(one_loop, 500);
-			}
-		}})
-		*/
-		$vm.open_dialog({name:'_system_import_dialog_module'});
-		gOK=1;
-		//start importing...
-		gLoop=setInterval(one_loop, 500);
+		if(m.import_check_first_record!=undefined){
+			m.import_check_first_record(items,function(r){
+				if(r==1){
+					$vm.open_dialog({name:'_system_import_dialog_module'});
+					gOK=1;
+					//start importing...
+					gLoop=setInterval(one_loop, 500);
+				}
+			});
+		}
+		else{
+			$vm.open_dialog({name:'_system_import_dialog_module'});
+			gOK=1;
+			//start importing...
+			gLoop=setInterval(one_loop, 500);
+		}
 	}
 }
 //-------------------------------------
