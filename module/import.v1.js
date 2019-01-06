@@ -15,7 +15,7 @@ $('#import_file__ID').on('change',function(evt){
 	}
 })
 //-------------------------------------
-var gNumber_to_process,gNumber_completed,gDialog_module_id;
+var gNumber_to_process,gNumber_completed,gDialog_module_id,gMumber_skip;
 var gI=0,gLines,gTab,gFields,gHeader;
 var gLoop;
 var gOK;
@@ -55,9 +55,8 @@ var one_loop=function(){
 					//------------------------------------------
 				}
 				else if(r==0){ //0 skip to next, no add, looks like this line is an empty 
-					//gNumber_completed++;
-					gI--;
-					gNumber_to_process--;
+					gNumber_completed++;
+					gMumber_skip++;
 					processing_file_end();
 				}
 				else if(r=-1){ //-1 stop, jump to end, move both pointers (gNumber_to_process and gI) to end
@@ -96,6 +95,7 @@ var processing_file_start=function(contents){
 	if(gLines.length>1){
 		gNumber_to_process=gLines.length-1; //-1: not count header line
 		gNumber_completed=0;
+		gMumber_skip=0;
 		gDialog_module_id=$vm.get_module_id({name:'_system_import_dialog_module'})
 		gTab='\t';
 		var n1=gLines[0].split('\t').length;
@@ -138,7 +138,7 @@ var processing_file_end=function(){
 	if(gNumber_to_process<=gNumber_completed){
 		gNumber_to_process=-1;
 		$vm.close_dialog({name:'_system_import_dialog_module'});
-		alert(gNumber_completed.toString()+" records have been imported.");
+		alert(gNumber_completed.toString()+" records have been imported("+gMumber_skip+" skiped).");
 		m.set_req(); m.request_data();
 	}
 }
