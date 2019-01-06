@@ -43,16 +43,42 @@ var one_loop=function(){
 			m.before_submit(rd,dbv);
 		}
 		//------------------------------------------
-		//add
-		var req={cmd:"add",db_pid:m.db_pid.toString(),data:rd,dbv:dbv};
-		//var req={cmd:"add",qid:m.qid,db_pid:m.db_pid.toString(),data:rd,dbv:dbv};
-		$VmAPI.request({data:req,callback:function(res){
-			gNumber_completed++;
-			processing_file_end();
-		}})
-		//------------------------------------------
+		if(m.import_check_record!==undefined){
+			m.import_check_record(rd,dbv,function(r){
+				if(r==1){ //1--add
+					//add
+					var req={cmd:"add",qid:m.qid,db_pid:m.db_pid.toString(),data:rd,dbv:dbv};
+					$VmAPI.request({data:req,callback:function(res){
+						gNumber_completed++;
+						processing_file_end();
+					}})
+					//------------------------------------------
+				}
+				else if(r==0){ //0 skip to next, no add, looks like this line is an empty 
+					//gNumber_completed++;
+					gI--;
+					gNumber_to_process--;
+					processing_file_end();
+				}
+				else if(r=-1){ //-1 stop, jump to end, move both pointers (gNumber_to_process and gI) to end
+					gNumber_to_process=gNumber_completed;
+					gI=gNumber_completed;
+					processing_file_end();
+				}
+			})
+		}
+		else{
+			//add
+			var req={cmd:"add",qid:m.qid,db_pid:m.db_pid.toString(),data:rd,dbv:dbv};
+			$VmAPI.request({data:req,callback:function(res){
+				gNumber_completed++;
+				processing_file_end();
+			}})
+			//------------------------------------------
+		}
 	}
 	else{
+		gI--;
 		gNumber_to_process--;
 		processing_file_end();
 	}
@@ -79,7 +105,7 @@ var processing_file_start=function(contents){
 		for(var k=0;k<gHeader.length;k++){gHeader[k]=gHeader[k].trim().replace(/ /g,'_');}
 		gFields=m.form_fields.split(',');
 		gI=1; //not 0, start from second line, the first line is header
-		
+		/*
 		//check first record
 		var items=gLines[gI].splitCSV(gTab);
 		if(m.import_check_first_record!=undefined){
@@ -98,6 +124,11 @@ var processing_file_start=function(contents){
 			//start importing...
 			gLoop=setInterval(one_loop, 500);
 		}
+		*/
+		$vm.open_dialog({name:'_system_import_dialog_module'});
+		gOK=1;
+		//start importing...
+		gLoop=setInterval(one_loop, 500);
 	}
 }
 //-------------------------------------
